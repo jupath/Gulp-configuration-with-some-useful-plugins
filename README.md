@@ -1,4 +1,5 @@
-## Basic Gulp configuration with some useful plugins for ES6 and SASS projects
+## Gulp configuration with some useful plugins for ES6 and SASS projects
+
 
 [1) Minify JavaScript](https://www.npmjs.com/package/gulp-uglify/)
 ```bash
