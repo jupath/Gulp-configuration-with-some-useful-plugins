@@ -14,16 +14,20 @@ const browserSync = require('browser-sync').create(); // Keep browsers in sync
 const dirs = {
     src: 'src',
     dest: 'build',
-    img: 'assets'
 };
 
 const paths = {
     scssSrc: `${dirs.src}/scss/**/*.scss`,
     cssDest: `${dirs.dest}/css/`,
+
     jsSrc: `${dirs.src}/js/*.js`,
     jsDest: `${dirs.dest}/js/`,
-    imgSrc: `${dirs.img}/images/*`,
-    imgDesc: `${dirs.img}/images/`
+
+    htmlSrc: `${dirs.src}/**/*.html`,
+    htmlDest: `${dirs.dest}/`,
+
+    imgSrc: `${dirs.src}/images/*`,
+    imgDest: `${dirs.dest}/images/`
 }
 
 // Compile sass into CSS & auto-inject into browsers
@@ -32,9 +36,6 @@ gulp.task('styles', () => {
             style: 'compressed'
         }).on('error', sass.logError) // Sass → CSS
         .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(uncss({
-            html: ['index.html'] // Remove unused CSS selectors ['./posts/**/*.html', 'http://example.com']]
-        }))
         .pipe(prefix('last 2 versions')) // Add vendor prefixes
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(paths.cssDest)) // Destination
@@ -58,29 +59,29 @@ gulp.task('scripts', () => {
 // Compress images
 gulp.task('images', () => {
     return gulp.src(paths.imgSrc)
-        .pipe(imagemin([
-            imagemin.jpegtran({progressive: true}),
-            imagemin.optipng({optimizationLevel: 5})
-        ]))
-        .pipe(gulp.dest(paths.imgDesc));
+        .pipe(imagemin())
+        .pipe(gulp.dest(paths.imgDest))
+        .pipe(browserSync.stream());;
 });
 
 // Minify HTML
 gulp.task('html', () => {
-    return gulp.src('*.html')
+    return gulp.src(paths.htmlSrc)
       .pipe(htmlmin({collapseWhitespace: true}))
-      .pipe(gulp.dest(dirs.dest));
-  });
+      .pipe(gulp.dest(paths.htmlDest))
+      .pipe(browserSync.stream());
+});
 
 // Watch
 gulp.task('watch', () => {
     browserSync.init({
-        server: "./"
+        server: "./build/"
     });
     gulp.watch(paths.jsSrc, ['scripts']);
     gulp.watch(paths.scssSrc, ['styles']);
-    gulp.watch("./*.html").on('change', browserSync.reload);
+    gulp.watch(paths.htmlSrc, ['html']);
+    gulp.watch(paths.imgSrc, ['images']);
 });
 
 // Default
-gulp.task('default', ['scripts', 'styles', 'watch']);
+gulp.task('default', ['scripts', 'styles', 'html', 'images', 'watch']);
