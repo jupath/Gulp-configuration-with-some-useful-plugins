@@ -46,7 +46,12 @@ npm install --save-dev gulp-sourcemaps
 npm install --save-dev gulp-htmlmin
 ```
 
-[10) Keep browsers in sync](https://browsersync.io/docs/gulp)
+[10) PUG → HTML](https://www.npmjs.com/package/gulp-pug)
+```bash
+npm install --save-dev gulp-pug
+```
+
+[11) Keep browsers in sync](https://browsersync.io/docs/gulp)
 ```bash
 npm install --save-dev browser-sync
 ```

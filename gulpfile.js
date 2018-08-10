@@ -6,6 +6,7 @@ const uncss = require('gulp-uncss'); // Remove unused CSS selectors
 const babel = require('gulp-babel'); // ES6 → ES5 with babel
 const concat = require('gulp-concat'); // Concatenate files
 const htmlmin = require('gulp-htmlmin'); // Minify HTML
+const pug = require('gulp-pug'); // PUG → HTML
 const imagemin = require('gulp-imagemin'); // Minify PNG, JPEG, GIF and SVG images
 const sourcemaps = require('gulp-sourcemaps'); // Sourcemaps
 const browserSync = require('browser-sync').create(); // Keep browsers in sync
@@ -24,6 +25,9 @@ const paths = {
     jsDest: `${dirs.dest}/js/`,
 
     htmlSrc: `${dirs.src}/**/*.html`,
+    htmlDest: `${dirs.dest}/`,
+
+    pugSrc: `${dirs.src}/**/*.pug`,
     htmlDest: `${dirs.dest}/`,
 
     imgSrc: `${dirs.src}/images/*`,
@@ -67,9 +71,17 @@ gulp.task('images', () => {
 // Minify HTML
 gulp.task('html', () => {
     return gulp.src(paths.htmlSrc)
-      .pipe(htmlmin({collapseWhitespace: true}))
-      .pipe(gulp.dest(paths.htmlDest))
-      .pipe(browserSync.stream());
+        .pipe(htmlmin({collapseWhitespace: true}))
+        .pipe(gulp.dest(paths.htmlDest))
+        .pipe(browserSync.stream());
+});
+
+// PUG → HTML
+gulp.task('pug', () => {
+    return gulp.src(paths.pugSrc)
+        .pipe(pug())
+        .pipe(gulp.dest(paths.htmlDest))
+        .pipe(browserSync.stream());
 });
 
 // Watch
